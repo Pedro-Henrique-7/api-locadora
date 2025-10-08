@@ -31,8 +31,6 @@ const { PrismaClient } = require('../../generated/prisma')
 // cria um objeto do prisma client para manipular os scripts sql
 const prisma = new PrismaClient()
 
-
-
 //Retorna todos os filmes do banco de dados
 const getSelectAllMovies = async function() {
 
@@ -41,8 +39,9 @@ const getSelectAllMovies = async function() {
 
     
         let result =  await prisma.$queryRawUnsafe(sql)
-    
-        if(result.length > 0)
+        
+        //VALIFAÇÃO PARA IDENTIFICAR SE O RETORNO DO BNACO É UM ARRAY VAZIO OU COM DADOS
+        if(Array.isArray(result))
             return result
         else
             return false
@@ -54,22 +53,7 @@ const getSelectAllMovies = async function() {
 
 // Retorna um filme filtrando por ID
 const getSelectByIdMovies = async function(id) {
-    try {
-        let sql = `select * from tbl_filme where id = ${id};`
-
-    
-        let result =  await prisma.$queryRawUnsafe(sql)
-    
-        if(result.length > 0)
-            return result
-        else
-            return false
-
-    } catch (error) {
-        return false
-    }
 }
-
 
 // insere um filme no banco de dados
 const setInsertMovies = async function (filme) {

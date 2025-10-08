@@ -8,9 +8,9 @@ const { response } = require("express");
 
 const dataAtual = new Date()
 //header do projeto
-const MESSAGE_HEADER = {
+const HEADER = {
                             developer : 'Pedro Henrique Oliveira da Silva',
-                            api_description: 'API para manipular dados da locadora de Filmes',
+                            api_description: 'API to manipulate data from a Movie Rental Store',
                             version: '1.0.10.25',
                             request_date:  dataAtual.toLocaleString(),
                             status:  Boolean,
@@ -23,13 +23,33 @@ const MESSAGE_HEADER = {
 
 //mensagem de sucesso do projeto
 
-const MESSAGE_SUCCESS_REQUEST = {
-                                    status: true, status_code: 200, message: 'Requisição Bem Succedida!!!'
+const SUCCESS_REQUEST = {
+                                    status: true, status_code: 200, message: 'Success'
                                 }
 
+/////////////////////////////
 
 
+////////ERROS
+
+const ERROR_NOT_FOUND = {
+                            status: false, status_code: 404, message: 'The server cannot find the requested resource.'
+}
+
+const ERROR_INTERNAL_SERVER_MODEl = {
+                                status: false, status_code: 500, message: 'The server has encountered a situation it does not know how to handle. Problems in data modeling'
+}
+
+const ERROR_INTERNAL_SERVER_CONTROLLER = {
+                                status: false, status_code: 500, message: 'The server has encountered a situation it does not know how to handle. Problems in data control'
+}
+
+
+//////
 module.exports={
-    MESSAGE_HEADER,
-    MESSAGE_SUCCESS_REQUEST
+    HEADER,
+    ERROR_NOT_FOUND,
+    ERROR_INTERNAL_SERVER_CONTROLLER,
+    ERROR_INTERNAL_SERVER_MODEl,
+    SUCCESS_REQUEST
 }
