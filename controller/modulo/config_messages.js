@@ -27,6 +27,10 @@ const SUCCESS_REQUEST = {
                                     status: true, status_code: 200, message: 'Success'
                                 }
 
+
+const SUCCESS_CREATED_ITEM = {
+    status: true, status_code: 201, message: 'Created'
+}
 /////////////////////////////
 
 
@@ -50,6 +54,11 @@ const ERROR_INTERNAL_SERVER_CONTROLLER = {
     message: 'The server has encountered a situation it does not know how to handle. Problems in data control'
 }
 
+const ERROR_CONTENT_TYPE = {
+    status: false,
+    status_code: 415,
+    message: 'Fail! Type Content needs to be a JSON'
+}
 
 
 const ERROR_REQUIRED_FIEDS = {
@@ -66,5 +75,7 @@ module.exports={
     ERROR_INTERNAL_SERVER_CONTROLLER,
     ERROR_INTERNAL_SERVER_MODEl,
     ERROR_REQUIRED_FIEDS,
-    SUCCESS_REQUEST
+    SUCCESS_REQUEST,
+    SUCCESS_CREATED_ITEM,
+    ERROR_CONTENT_TYPE
 }

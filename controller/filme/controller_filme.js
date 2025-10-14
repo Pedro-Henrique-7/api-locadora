@@ -78,8 +78,54 @@ async function buscarFilmeId(id) {
 }
 
 // insere um novo filme
-async function inserirFilme(filme) {
+async function inserirFilme(filme, contentType) {
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
+    try {
+
+        if(String(contentType).toUpperCase == 'APPLICATION/JSON '){
+
+            if(filme.nome == '' || filme.nome == null || filme.nome == undefined || filme.nome.length >100){
+                // erro
+                MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [NOME] <- INVÁLIDO'
+                return MESSAGE.ERROR_REQUIRED_FIEDS
+            }else if(filme.sinopse == undefined){
+                MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [SINOPSE] <- INVÁLIDO'
+                return MESSAGE.ERROR_REQUIRED_FIEDS
+            }else if(filme.data_lancamento == undefined || filme.data_lancamento.length != 10){
+                MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [DATA_LANCAMENTO] <- INVÁLIDO'
+                return MESSAGE.ERROR_REQUIRED_FIEDS
+            }else if(filme.duracao == ''|| filme.duracao == null || filme.duracao == undefined || filme.duracao.length > 8){
+                MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [DURACAO] <- INVÁLIDO'
+                return MESSAGE.ERROR_REQUIRED_FIEDS
+            }else if(filme.orcamento == '' || filme.orcamento == null || filme.orcamento == undefined || typeof(filme.orcamento) != Number){
+                MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [ORCAMENTO] <- INVÁLIDO'
+                return MESSAGE.ERROR_REQUIRED_FIEDS
+            }else if(filme.trailer == undefined || filme.trailer.length > 200){
+                MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [TRAILER] <- INVÁLIDO'
+                return MESSAGE.ERROR_REQUIRED_FIEDS
+            }else if(filme.capa == ''|| filme.capa == null || filme.capa == undefined || filme.capa.length > 200){
+                MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [CAPA] <- INVÁLIDO'
+                return MESSAGE.ERROR_REQUIRED_FIEDS
+            }else{
+                // chama função do DAO para inserir novo filme
+                let result = await filmeDAO.setInsertMovies(filme)
+                if(result){
+                    MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status
+                    MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
+                    MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message
+
+                    return MESSAGE.HEADER //201
+                }else{
+                    MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+                }
+            }
+        }else{
+            return MESSAGE.ERROR_CONTENT_TYPE
+        }
+    } catch (error) {
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
 }
 
 //atuliza um filme filtrando pelo id
@@ -93,5 +139,6 @@ async function excluirFilme(id) {
 
 module.exports = {
     listarFilmes,
-    buscarFilmeId
+    buscarFilmeId,
+    inserirFilme
 }
