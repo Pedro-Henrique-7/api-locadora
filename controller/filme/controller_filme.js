@@ -46,7 +46,11 @@ async function buscarFilmeId(id) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
+
+        //validação de campo obrigatorio
         if (id != '' && id != null && id != undefined && !isNaN(id) && id > 0) {
+
+            // chama a função que filtra por id
             let result = await filmeDAO.getSelectByIdMovies(parseInt(id))
 
             if (result) {
@@ -54,6 +58,7 @@ async function buscarFilmeId(id) {
                     MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
                     MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
                     MESSAGE.HEADER.response.films = result
+
                     return MESSAGE.HEADER //200
                 } else {
                     return MESSAGE.ERROR_NOT_FOUND // 404
