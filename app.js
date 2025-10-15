@@ -15,7 +15,7 @@ const bodyParser = require('body-parser')
 const controllerFilme = require('./controller/filme/controller_filme.js')
 
 // cria um objeto especialista em JSON para receber os dados do body (post e put)
-const bodyParserJSON = bodyParser.json
+const bodyParserJSON = bodyParser.json()
 
 
 //deifine a porta padrão da api, se for servidor de nuvem nao temos acesso a porta
@@ -62,7 +62,7 @@ app.get('/v1/locadora/filme/:id', cors(), async (request, response)=> {
 
 
 //insere um novo firme no banco dedados
-app.post('/v1/locadora/filme', cors(),  bodyParserJSON, async (request, response)=>{
+app.post('/v1/locadora/filme', cors(), bodyParserJSON, async (request, response)=>{
     
     // Recebe o JSON pelo body da requisição
     let dadosBody = request.body
@@ -77,6 +77,33 @@ app.post('/v1/locadora/filme', cors(),  bodyParserJSON, async (request, response
     response.json(filme)
 })
 
+
+app.put('/v1/locadora/filme/:id', cors(), bodyParserJSON , async (request, response) =>{
+    
+    //recebe os dados do body
+    let dadosBody = request.body
+
+    // recebe o id do filme encaminhado da url
+    let idFilme = request.params.id
+
+    // recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    let filme = await controllerFilme.ataualizarFilme(dadosBody, idFilme, contentType)
+
+    response.status(filme.status_code)
+    response.json(filme)
+} )
+
+
+app.delete('/v1/locadora/filme/:id', cors(), async (request, response) => {
+    let idFilme = request.params.id
+
+    let filme = await controllerFilme.excluirFilme(idFilme)
+
+    response.status(filme.status_code)
+    response.json(filme)
+})
 app.listen(PORT,function(){
     console.log('api aguardando requisições')
 })

@@ -71,8 +71,6 @@ const getSelectByIdMovies = async function(id) {
 }
 
 
-
-
 // insere um filme no banco de dados
 const setInsertMovies = async function (filme) {
     try {
@@ -95,18 +93,48 @@ const setInsertMovies = async function (filme) {
     }
 }
 
+
 // atualiza um filme no banco de dados filtrando pelo id
 const setUpdateMovie = async function (filme) {
-    
+    try {
+        let sql = `update tbl_filme set 
+                        nome            =   '${filme.nome}',
+                        sinopse         =   '${filme.sinopse}', 
+                        data_lancamento =   '${filme.data_lancamento}', 
+                        duracao         =   '${filme.duracao}',
+                        orcamento       =   '${filme.orcamento}',
+                        trailer         =   '${filme.trailer}', 
+                        capa            =   '${filme.capa}'
+                        where id = ${filme.id}
+                    `         
+        let result = await prisma.$executeRawUnsafe(sql)
+        if(result)
+            return true
+        else
+            return false
+    } catch (error) {
+        return false
+    } 
 }
 
 // deleta um filme no banco filtrando pelo id
 const setDeleteMovies = async function (id) {
-    
+    try {
+        let sql = `delete from tbl_filme where id = ${id}`
+        let result = await prisma.$executeRawUnsafe(sql)
+            if(result)
+                return true
+            else
+                return false
+    } catch (error) {
+        return false
+    }
 }
 
 module.exports={
     getSelectAllMovies,
     getSelectByIdMovies,
-    setInsertMovies
+    setInsertMovies,
+    setUpdateMovie,
+    setDeleteMovies
 }

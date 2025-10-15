@@ -24,13 +24,23 @@ const HEADER = {
 //mensagem de sucesso do projeto
 
 const SUCCESS_REQUEST = {
-                                    status: true, status_code: 200, message: 'Success'
+    status: true, status_code: 200, message: 'Success'
                                 }
 
 
 const SUCCESS_CREATED_ITEM = {
     status: true, status_code: 201, message: 'Created'
 }
+
+const SUCCESS_UPDATED_ITEM = {
+    status: true, status_code: 200, message: 'Good Request, object has been sucessfully updated'
+}
+
+const SUCCESS_DELETED_ITEM = {
+    status: true, status_code: 200, message: 'Good Request, object has been sucessfully deleted'
+}
+
+
 /////////////////////////////
 
 
@@ -77,5 +87,7 @@ module.exports={
     ERROR_REQUIRED_FIEDS,
     SUCCESS_REQUEST,
     SUCCESS_CREATED_ITEM,
+    SUCCESS_UPDATED_ITEM,
+    SUCCESS_DELETED_ITEM,
     ERROR_CONTENT_TYPE
 }
