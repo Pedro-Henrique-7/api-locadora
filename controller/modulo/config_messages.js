@@ -71,7 +71,7 @@ const ERROR_CONTENT_TYPE = {
 }
 
 
-const ERROR_REQUIRED_FIEDS = {
+const ERROR_REQUIRED_FIELDS = {
                     status: false,
                     status_code: 400,
                     message: 'The server cannot or will not process the request because some required field are not bad).'
@@ -84,7 +84,7 @@ module.exports={
     ERROR_NOT_FOUND,
     ERROR_INTERNAL_SERVER_CONTROLLER,
     ERROR_INTERNAL_SERVER_MODEl,
-    ERROR_REQUIRED_FIEDS,
+    ERROR_REQUIRED_FIELDS,
     SUCCESS_REQUEST,
     SUCCESS_CREATED_ITEM,
     SUCCESS_UPDATED_ITEM,

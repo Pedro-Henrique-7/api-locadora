@@ -13,6 +13,11 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const controllerFilme = require('./controller/filme/controller_filme.js')
+const controllerGenero = require('./controller/genero/controller_genero.js')
+
+const itsWorking = require('./itsWorking.js')
+
+const itsWorkingMessage = itsWorking.showMessage()
 
 // cria um objeto especialista em JSON para receber os dados do body (post e put)
 const bodyParserJSON = bodyParser.json()
@@ -35,8 +40,18 @@ app.use((request,response,next)=>{
 })
 
 
-// ENDPOINT PARA CRUD DE FILMES
+//endpoint padrão
+app.get('/v1/locadora/' , cors(), async (request, response)=>{
 
+    let menssagem = `   <h1>Bem Vindo a Locadora de Filmes Senai</h1>
+                        <h2> Faça uma requisição </h2>`
+
+    response.send(`${menssagem}`)
+})
+
+
+
+// ENDPOINT PARA CRUD DE FILMES-------------------------------------------
 app.get('/v1/locadora/filmes', cors(), async (request, response)=> {
 //chama a função da controller par aretornar os movies
 
@@ -44,6 +59,9 @@ app.get('/v1/locadora/filmes', cors(), async (request, response)=> {
     response.status(filme.status_code)
     response.json(filme)
 })
+
+
+
 
 //retorna um filme por i 
 app.get('/v1/locadora/filme/:id', cors(), async (request, response)=> {
@@ -104,6 +122,70 @@ app.delete('/v1/locadora/filme/:id', cors(), async (request, response) => {
     response.status(filme.status_code)
     response.json(filme)
 })
+//--------------------------------------------------------------------------
+
+//ENDPOINTS PARA CRUD DE GENERO
+
+app.get('/v1/locadora/genero', cors(), async (request, response) => {
+    let genero = await controllerGenero.listarGeneros()
+
+    response.status(genero.status_code)
+    response.json(genero)
+})
+
+
+
+app.get('/v1/locadora/genero/:id', cors(), async (request, response) => {
+    let idGenero = request.params.id
+    
+    let genero = await controllerGenero.buscarGeneroId(idGenero)
+
+    response.status(genero.status_code)
+    response.json(genero)
+})
+
+app.post('/v1/locadora/genero', cors(), bodyParserJSON, async (request, response) => {
+
+        // Recebe o JSON pelo body da requisição
+        let dadosBody = request.body
+
+        //Recebe o content type da requisição 
+        let contentType = request.headers['content-type']
+
+        let genero = await controllerGenero.inserirGenero(dadosBody, contentType)
+
+        response.status(genero.status_code)
+        response.json(genero)
+})
+
+
+app.put('/v1/locadora/genero/:id', cors(), bodyParserJSON, async (request, response) => {
+
+    // Recebe o JSON pelo body da requisição
+    let dadosBody = request.body
+
+    let idGenero = request.params.id
+
+    //Recebe o content type da requisição 
+    let contentType = request.headers['content-type']
+
+    let genero = await controllerGenero.atualizarGenero(dadosBody, idGenero, contentType)
+
+    response.status(genero.status_code)
+    response.json(genero)
+})
+
+
+
+app.delete('/v1/locadora/genero/:id', cors(), async (request, response) => {
+    let idGenero = request.params.id
+
+    let genero = await controllerGenero.deletarGenero(idGenero)
+
+    response.status(genero.status_code)
+    response.json(genero)
+})
+
 app.listen(PORT,function(){
-    console.log('api aguardando requisições')
+    console.log(`${itsWorkingMessage}`)
 })

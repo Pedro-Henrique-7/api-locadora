@@ -68,8 +68,8 @@ async function buscarFilmeId(id) {
             }
 
         }else{
-            MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [ID] <- INVÁLIDO'
-            return MESSAGE.ERROR_REQUIRED_FIEDS
+            MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'ATRIUBUTO -> [ID] <- INVÁLIDO'
+            return MESSAGE.ERROR_REQUIRED_FIELDS
         }
 
     } catch (error) {
@@ -95,13 +95,28 @@ async function inserirFilme(filme, contentType) {
                 // chama função do DAO para inserir novo filme
                 let result = await filmeDAO.setInsertMovies(filme)
                 if(result){
-                    MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status
-                    MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
-                    MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message
 
-                    return MESSAGE.HEADER //201
+                    //chama a funçaõ para receber o ultimo id gerado no banco de dados
+                    let lastIdFilme = await filmeDAO.getSelectLastIdFilm()
+
+                    if(lastIdFilme){
+                        
+                        // adiciona no json de filme o id que foi gerado pelo banco de dados
+                        filme.id                   =  lastIdFilme
+                        MESSAGE.HEADER.status      = MESSAGE.SUCCESS_CREATED_ITEM.status
+                        MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
+                        MESSAGE.HEADER.message     = MESSAGE.SUCCESS_CREATED_ITEM.message
+                        MESSAGE.HEADER.response    = filme
+
+
+                        return MESSAGE.HEADER //201   
+                    }else{
+                        return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+                    }
+
+                  
                 }else{
-                    MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+                    return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
                 }
             }else{
                 return validarDados //400
@@ -179,7 +194,8 @@ async function excluirFilme(id) {
                 MESSAGE.HEADER.status       = MESSAGE.SUCCESS_DELETED_ITEM.status
                 MESSAGE.HEADER.status_code  = MESSAGE.SUCCESS_DELETED_ITEM.status_code
                 MESSAGE.HEADER.message      = MESSAGE.SUCCESS_DELETED_ITEM.message
-
+                delete MESSAGE.HEADER.response
+                
                 return MESSAGE.HEADER
             }else{
                 return MESSAGE.ERROR_INTERNAL_SERVER_MODEL

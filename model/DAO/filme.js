@@ -105,7 +105,7 @@ const setUpdateMovie = async function (filme) {
                         orcamento       =   '${filme.orcamento}',
                         trailer         =   '${filme.trailer}', 
                         capa            =   '${filme.capa}'
-                        where id = ${filme.id}
+                        where id = ${filme.id};
                     `         
         let result = await prisma.$executeRawUnsafe(sql)
         if(result)
@@ -131,9 +131,26 @@ const setDeleteMovies = async function (id) {
     }
 }
 
+
+const getSelectLastIdFilm = async function (){
+    try {
+        let sql = `select id from tbl_filme order by id desc limit 1;`
+        let result =  await prisma.$queryRawUnsafe(sql)
+
+        //VALIFAÇÃO PARA IDENTIFICAR SE O RETORNO DO BNACO É UM ARRAY VAZIO OU COM DADOS
+        if(Array.isArray(result))
+            return Number(result[0].id)
+        else
+            return false
+
+    } catch (error) {
+        return false
+    }
+}
 module.exports={
     getSelectAllMovies,
     getSelectByIdMovies,
+    getSelectLastIdFilm,
     setInsertMovies,
     setUpdateMovie,
     setDeleteMovies
