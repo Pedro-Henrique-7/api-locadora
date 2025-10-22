@@ -1,5 +1,5 @@
 /********************************************************************
- * Objetivo : arquivo responsavel pela realização do crud de filme no banco Mysql
+ * Objetivo : arquivo responsavel pela realização do crud de genero no banco Mysql
  * data: 22/10/2025
  * autor: Pedro
  * Versão: 1.0
