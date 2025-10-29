@@ -14,6 +14,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const controllerFilme = require('./controller/filme/controller_filme.js')
 const controllerGenero = require('./controller/genero/controller_genero.js')
+const controllerNacionalidade = require('./controller/nacionalidade/controller_nacionalidade.js')
 
 const itsWorking = require('./itsWorking.js')
 
@@ -24,14 +25,14 @@ const bodyParserJSON = bodyParser.json()
 
 
 //deifine a porta padrão da api, se for servidor de nuvem nao temos acesso a porta
-    //EM EXECUÇÃO LOCAL PODEMOS DEFINIR A PORTA
-const PORT  = process.PORT || 8080
+//EM EXECUÇÃO LOCAL PODEMOS DEFINIR A PORTA
+const PORT = process.PORT || 8080
 
 //instancia da classe express
 const app = express()
 
 //config cors
-app.use((request,response,next)=>{
+app.use((request, response, next) => {
     response.header('Acess-Control-Allow-Origin', '*') // Ip de Origem
     response.header('Acess-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS') //  Metodos Http
 
@@ -41,7 +42,7 @@ app.use((request,response,next)=>{
 
 
 //endpoint padrão
-app.get('/v1/locadora/' , cors(), async (request, response)=>{
+app.get('/v1/locadora/', cors(), async(request, response) => {
 
     let menssagem = `   <h1>Bem Vindo a Locadora de Filmes Senai</h1>
                         <h2> Faça uma requisição </h2>`
@@ -52,8 +53,8 @@ app.get('/v1/locadora/' , cors(), async (request, response)=>{
 
 
 // ENDPOINT PARA CRUD DE FILMES-------------------------------------------
-app.get('/v1/locadora/filmes', cors(), async (request, response)=> {
-//chama a função da controller par aretornar os movies
+app.get('/v1/locadora/filmes', cors(), async(request, response) => {
+    //chama a função da controller par aretornar os movies
 
     let filme = await controllerFilme.listarFilmes()
     response.status(filme.status_code)
@@ -64,9 +65,9 @@ app.get('/v1/locadora/filmes', cors(), async (request, response)=> {
 
 
 //retorna um filme por i 
-app.get('/v1/locadora/filme/:id', cors(), async (request, response)=> {
+app.get('/v1/locadora/filme/:id', cors(), async(request, response) => {
     //chama a função da controller para retornar o movie
-    
+
     //recebe o id enviado na requisição via parametro
     let idFilme = request.params.id
 
@@ -80,8 +81,8 @@ app.get('/v1/locadora/filme/:id', cors(), async (request, response)=> {
 
 
 //insere um novo firme no banco dedados
-app.post('/v1/locadora/filme', cors(), bodyParserJSON, async (request, response)=>{
-    
+app.post('/v1/locadora/filme', cors(), bodyParserJSON, async(request, response) => {
+
     // Recebe o JSON pelo body da requisição
     let dadosBody = request.body
 
@@ -90,14 +91,14 @@ app.post('/v1/locadora/filme', cors(), bodyParserJSON, async (request, response)
 
     // chama a função da controller para inserir o filme, enviamos os dados do body e o content-type
     let filme = await controllerFilme.inserirFilme(dadosBody, contentType)
-    
+
     response.status(filme.status_code)
     response.json(filme)
 })
 
 
-app.put('/v1/locadora/filme/:id', cors(), bodyParserJSON , async (request, response) =>{
-    
+app.put('/v1/locadora/filme/:id', cors(), bodyParserJSON, async(request, response) => {
+
     //recebe os dados do body
     let dadosBody = request.body
 
@@ -111,22 +112,22 @@ app.put('/v1/locadora/filme/:id', cors(), bodyParserJSON , async (request, respo
 
     response.status(filme.status_code)
     response.json(filme)
-} )
-
-
-app.delete('/v1/locadora/filme/:id', cors(), async (request, response) => {
-    let idFilme = request.params.id
-
-    let filme = await controllerFilme.excluirFilme(idFilme)
-
-    response.status(filme.status_code)
-    response.json(filme)
 })
-//--------------------------------------------------------------------------
+
+
+app.delete('/v1/locadora/filme/:id', cors(), async(request, response) => {
+        let idFilme = request.params.id
+
+        let filme = await controllerFilme.excluirFilme(idFilme)
+
+        response.status(filme.status_code)
+        response.json(filme)
+    })
+    //--------------------------------------------------------------------------
 
 //ENDPOINTS PARA CRUD DE GENERO
 
-app.get('/v1/locadora/genero', cors(), async (request, response) => {
+app.get('/v1/locadora/genero', cors(), async(request, response) => {
     let genero = await controllerGenero.listarGeneros()
 
     response.status(genero.status_code)
@@ -135,31 +136,31 @@ app.get('/v1/locadora/genero', cors(), async (request, response) => {
 
 
 
-app.get('/v1/locadora/genero/:id', cors(), async (request, response) => {
+app.get('/v1/locadora/genero/:id', cors(), async(request, response) => {
     let idGenero = request.params.id
-    
+
     let genero = await controllerGenero.buscarGeneroId(idGenero)
 
     response.status(genero.status_code)
     response.json(genero)
 })
 
-app.post('/v1/locadora/genero', cors(), bodyParserJSON, async (request, response) => {
+app.post('/v1/locadora/genero', cors(), bodyParserJSON, async(request, response) => {
 
-        // Recebe o JSON pelo body da requisição
-        let dadosBody = request.body
+    // Recebe o JSON pelo body da requisição
+    let dadosBody = request.body
 
-        //Recebe o content type da requisição 
-        let contentType = request.headers['content-type']
+    //Recebe o content type da requisição 
+    let contentType = request.headers['content-type']
 
-        let genero = await controllerGenero.inserirGenero(dadosBody, contentType)
+    let genero = await controllerGenero.inserirGenero(dadosBody, contentType)
 
-        response.status(genero.status_code)
-        response.json(genero)
+    response.status(genero.status_code)
+    response.json(genero)
 })
 
 
-app.put('/v1/locadora/genero/:id', cors(), bodyParserJSON, async (request, response) => {
+app.put('/v1/locadora/genero/:id', cors(), bodyParserJSON, async(request, response) => {
 
     // Recebe o JSON pelo body da requisição
     let dadosBody = request.body
@@ -177,7 +178,7 @@ app.put('/v1/locadora/genero/:id', cors(), bodyParserJSON, async (request, respo
 
 
 
-app.delete('/v1/locadora/genero/:id', cors(), async (request, response) => {
+app.delete('/v1/locadora/genero/:id', cors(), async(request, response) => {
     let idGenero = request.params.id
 
     let genero = await controllerGenero.deletarGenero(idGenero)
@@ -186,6 +187,75 @@ app.delete('/v1/locadora/genero/:id', cors(), async (request, response) => {
     response.json(genero)
 })
 
-app.listen(PORT,function(){
+//-------------------------------------------------------------------------------
+
+// ENDPOINTS PARA NACIONALIDADES
+
+app.get('/v1/locadora/nacionalidade', cors(), async(request, response) => {
+    let nacionalidade = await controllerNacionalidade.listarNacionalidades()
+
+    response.status(nacionalidade.status_code)
+    response.json(nacionalidade)
+})
+
+
+
+app.get('/v1/locadora/nacionalidade/:id', cors(), async(request, response) => {
+    let idNacionalidade = request.params.id
+
+    let nacionalidade = await controllerNacionalidade.buscarNacionalidadeId(idNacionalidade)
+
+    response.status(nacionalidade.status_code)
+    response.json(nacionalidade)
+})
+
+app.post('/v1/locadora/nacionalidade', cors(), bodyParserJSON, async(request, response) => {
+
+    // Recebe o JSON pelo body da requisição
+    let dadosBody = request.body
+
+    //Recebe o content type da requisição 
+    let contentType = request.headers['content-type']
+
+    let nacionalidade = await controllerNacionalidade.inserirNacionalidade(dadosBody, contentType)
+
+    response.status(nacionalidade.status_code)
+    response.json(nacionalidade)
+})
+
+
+app.put('/v1/locadora/nacionalidade/:id', cors(), bodyParserJSON, async(request, response) => {
+
+    // Recebe o JSON pelo body da requisição
+    let dadosBody = request.body
+
+    let idNacionalidade = request.params.id
+
+    //Recebe o content type da requisição 
+    let contentType = request.headers['content-type']
+
+    let nacionalidade = await controllerNacionalidade.atualizarNacionalidade(dadosBody, idNacionalidade, contentType)
+
+    response.status(nacionalidade.status_code)
+    response.json(nacionalidade)
+})
+
+
+
+app.delete('/v1/locadora/nacionalidade/:id', cors(), async(request, response) => {
+    let idNacionalidade = request.params.id
+
+    let nacionalidade = await controllerNacionalidade.excluirNacionalidade(idNacionalidade)
+
+    response.status(nacionalidade.status_code)
+    response.json(nacionalidade)
+})
+
+
+
+
+
+
+app.listen(PORT, function() {
     console.log(`${itsWorkingMessage}`)
 })

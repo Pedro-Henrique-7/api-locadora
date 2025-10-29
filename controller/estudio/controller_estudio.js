@@ -1,27 +1,30 @@
-/*
+/********************************************************************
  * Objetivo : arquivo responsavel pela manipulação de dados entre APP e MODEL(validações, tratamento de dados, tratamento de erros etc...)
- * data: 29/10/2025
+ * data: 07/10/2025
  * autor: Pedro
  * Versão: 1.0
- */
-
+ * ******************************************************************/
 //import do arquivo DAO par amnipular o crud no banco de dados
-const nacionalidadeDAO = require('../../model/DAO/nacionalidade.js')
+const estudioDAO = require('../../model/DAO/estudio.js')
 
 const MESSAGE_DEFAULT = require('../modulo/config_messages.js') // import do arquivo de padronizção de mensagens
 
-//reset message
+// retorna lista de estudios
+async function listarEstudios() {
 
-async function listarNacionalidades() {
+    //realizando copia do objeto message default, permitindo que as alterações desta função não interfiram em outras funções
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
-        let result = await nacionalidadeDAO.getSelectedAllNationalities()
+
+
+        let result = await estudioDAO.getSelectAllStudios()
+
         if (result) {
             if (result.length > 0) {
                 MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
                 MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-                MESSAGE.HEADER.response.nacionalities = result
+                MESSAGE.HEADER.response.films = result
                 return MESSAGE.HEADER //200
             } else {
                 return MESSAGE.ERROR_NOT_FOUND // 404
@@ -37,7 +40,8 @@ async function listarNacionalidades() {
 
 }
 
-async function buscarNacionalidadeId(id) {
+// retorna um estudio filtrando pelo id 
+async function buscarEstudioId(id) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
@@ -46,13 +50,13 @@ async function buscarNacionalidadeId(id) {
         if (id != '' && id != null && id != undefined && !isNaN(id) && id > 0) {
 
             // chama a função que filtra por id
-            let result = await nacionalidadeDAO.getSelectedByIdNacionality(parseInt(id))
+            let result = await estudioDAO.getSelectByIDStudio(parseInt(id))
 
             if (result) {
                 if (result.length > 0) {
                     MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
                     MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-                    MESSAGE.HEADER.response.nacionalities = result
+                    MESSAGE.HEADER.response.films = result
 
                     return MESSAGE.HEADER //200
                 } else {
@@ -70,10 +74,10 @@ async function buscarNacionalidadeId(id) {
     } catch (error) {
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER // 500
     }
-
 }
 
-async function inserirNacionalidade(nacionalidade, contentType) {
+// insere um novo estudio
+async function inserirEstudio(estudio, contentType) {
 
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
@@ -82,26 +86,26 @@ async function inserirNacionalidade(nacionalidade, contentType) {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
             //chama a função de validação dos dados de cadastro
-            let validarDados = await validarDadosNacionalidades(nacionalidade)
+            let validarDados = await validarDadosEstudios(estudio)
 
             if (!validarDados) {
 
 
-                // chama função do DAO para inserir novo nacionalidade
-                let result = await nacionalidadeDAO.setInsertNacionality(nacionalidade)
-                console.log(result)
+                // chama função do DAO para inserir novo estudio
+                let result = await estudioDAO.setInsertStudio(estudio)
                 if (result) {
 
                     //chama a funçaõ para receber o ultimo id gerado no banco de dados
-                    let lastIdNacionalidade = await nacionalidadeDAO.getSelectLastIdNacionality()
-                    if (lastIdNacionalidade) {
+                    let lastIdEstudio = await estudioDAO.getSelectLastIDStudio()
 
-                        // adiciona no json de nacionalidade o id que foi gerado pelo banco de dados
-                        nacionalidade.nacionalidade_id = lastIdNacionalidade
+                    if (lastIdEstudio) {
+
+                        // adiciona no json de estudio o id que foi gerado pelo banco de dados
+                        estudio.id = lastIdEstudio
                         MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status
                         MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
                         MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message
-                        MESSAGE.HEADER.response = nacionalidade
+                        MESSAGE.HEADER.response = estudio
 
 
                         return MESSAGE.HEADER //201   
@@ -122,11 +126,12 @@ async function inserirNacionalidade(nacionalidade, contentType) {
     } catch (error) {
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
-
 }
 
+//atuliza um estudio filtrando pelo id
+async function ataualizarEstudio(estudio, id, contentType) {
 
-async function atualizarNacionalidade(nacionalidade, id, contentType) {
+
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
@@ -134,32 +139,32 @@ async function atualizarNacionalidade(nacionalidade, id, contentType) {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
             //adicionando o ID no json
-            nacionalidade.id = parseInt(id)
+            estudio.id = parseInt(id)
 
             //chama a função de validação dos dados de cadastro
-            let validarDados = await validarDadosNacionalidades(nacionalidade)
+            let validarDados = await validarDadosestudios(estudio)
 
             if (!validarDados) {
 
-                let validarId = await buscarNacionalidadeId(id)
+                let validarId = await buscarEstudioId(id)
 
                 //Verifica se o Id exite do BD, caso exista teremos o status 200
                 if (validarId.status_code == 200) {
 
-                    // chama função do DAO para atualizar filme
-                    let result = await nacionalidadeDAO.setUpdateNacionality(nacionalidade, id, contentType)
+                    // chama função do DAO para atualizar estudio
+                    let result = await estudioDAO.setUpdateMovie(estudio, id, contentType)
                     if (result) {
                         MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
                         MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
                         MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message
-                        MESSAGE.HEADER.response = nacionalidade
+                        MESSAGE.HEADER.response = estudio
 
                         return MESSAGE.HEADER //201
                     } else {
                         MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
                     }
                 } else {
-                    return validarId //retorno da função de buscar filme por id 400 ou 404 ou 500
+                    return validarId //retorno da função de buscar estudio por id 400 ou 404 ou 500
                 }
 
             } else {
@@ -171,16 +176,19 @@ async function atualizarNacionalidade(nacionalidade, id, contentType) {
     } catch (error) {
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
+
+
+
 }
-
-
-async function excluirNacionalidade(id) {
+//apaga um estudio filtrando pelo id
+async function excluirEstudio(id) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+
     try {
-        let validarId = await buscarNacionalidadeId(id)
+        let validarId = await buscarEstudioId(id)
         if (validarId.status_code == 200) {
 
-            let result = await nacionalidadeDAO.setDeleteNacionality(id)
+            let result = await estudioDAO.setDeleteStudio(id)
             if (result) {
                 MESSAGE.HEADER.status = MESSAGE.SUCCESS_DELETED_ITEM.status
                 MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_DELETED_ITEM.status_code
@@ -201,33 +209,36 @@ async function excluirNacionalidade(id) {
 
 }
 
-
-async function validarDadosNacionalidades(nacionalidade) {
+//Validação dos dados de cadastro do estudio
+async function validarDadosestudios(estudio) {
 
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
-    if (nacionalidade.pais == '' || nacionalidade.pais == null || nacionalidade.pais == undefined || nacionalidade.pais.length > 100) {
+    if (estudio.nome == '' || estudio.nome == null || estudio.nome == undefined || estudio.nome.length > 100) {
         // erro
         MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [NOME] <- INVÁLIDO'
         return MESSAGE.ERROR_REQUIRED_FIEDS
-    } else if (nacionalidade.gentilico == '' || nacionalidade.gentilico == null || nacionalidade.gentilico == undefined || nacionalidade.gentilico.length > 100) {
-        // erro
-        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [GENTILICO] <- INVÁLIDO'
+    } else if (estudio.sede == '' || estudio.sede == null || estudio.sede == undefined || estudio.sede.length > 150) {
+        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [SEDE] <- INVÁLIDO'
         return MESSAGE.ERROR_REQUIRED_FIEDS
-    } else if (nacionalidade.sigla == '' || nacionalidade.sigla == null || nacionalidade.sigla == undefined || nacionalidade.sigla.length > 2) {
-        // erro
-        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [SIGLA] <- INVÁLIDO'
+    } else if (estudio.data_fundacao == undefined || estudio.data_lancamento.length != 10) {
+        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [DATA_FUNDACAO] <- INVÁLIDO'
         return MESSAGE.ERROR_REQUIRED_FIEDS
+    } else if (estudio.fundador == '' || estudio.fundador == null || estudio.fundador == undefined || estudio.fundador.length > 8) {
+        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [FUNDADOR] <- INVÁLIDO'
+        return MESSAGE.ERROR_REQUIRED_FIEDS
+    } else if (estudio.descricao == undefined) {
+        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [DESCRIÇÃO] <- INVÁLIDO'
+
     } else {
         return false
     }
 }
 
-
 module.exports = {
-    listarNacionalidades,
-    buscarNacionalidadeId,
-    inserirNacionalidade,
-    atualizarNacionalidade,
-    excluirNacionalidade
+    listarEstudios,
+    buscarEstudioId,
+    inserirEstudio,
+    ataualizarEstudio,
+    excluirEstudio
 }
