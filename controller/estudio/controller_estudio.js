@@ -87,12 +87,11 @@ async function inserirEstudio(estudio, contentType) {
 
             //chama a função de validação dos dados de cadastro
             let validarDados = await validarDadosEstudios(estudio)
-
             if (!validarDados) {
-
-
                 // chama função do DAO para inserir novo estudio
                 let result = await estudioDAO.setInsertStudio(estudio)
+                console.log(result)
+
                 if (result) {
 
                     //chama a funçaõ para receber o ultimo id gerado no banco de dados
@@ -124,7 +123,8 @@ async function inserirEstudio(estudio, contentType) {
             return MESSAGE.ERROR_CONTENT_TYPE
         }
     } catch (error) {
-        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+        console.log(error)
+            // return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
 
@@ -142,7 +142,7 @@ async function ataualizarEstudio(estudio, id, contentType) {
             estudio.id = parseInt(id)
 
             //chama a função de validação dos dados de cadastro
-            let validarDados = await validarDadosestudios(estudio)
+            let validarDados = await validarDadosEstudios(estudio)
 
             if (!validarDados) {
 
@@ -210,26 +210,25 @@ async function excluirEstudio(id) {
 }
 
 //Validação dos dados de cadastro do estudio
-async function validarDadosestudios(estudio) {
+async function validarDadosEstudios(estudio) {
 
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     if (estudio.nome == '' || estudio.nome == null || estudio.nome == undefined || estudio.nome.length > 100) {
-        // erro
-        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [NOME] <- INVÁLIDO'
-        return MESSAGE.ERROR_REQUIRED_FIEDS
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'ATRIUBUTO -> [NOME] <- INVÁLIDO'
+        return MESSAGE.ERROR_REQUIRED_FIELDS
     } else if (estudio.sede == '' || estudio.sede == null || estudio.sede == undefined || estudio.sede.length > 150) {
-        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [SEDE] <- INVÁLIDO'
-        return MESSAGE.ERROR_REQUIRED_FIEDS
-    } else if (estudio.data_fundacao == undefined || estudio.data_lancamento.length != 10) {
-        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [DATA_FUNDACAO] <- INVÁLIDO'
-        return MESSAGE.ERROR_REQUIRED_FIEDS
-    } else if (estudio.fundador == '' || estudio.fundador == null || estudio.fundador == undefined || estudio.fundador.length > 8) {
-        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [FUNDADOR] <- INVÁLIDO'
-        return MESSAGE.ERROR_REQUIRED_FIEDS
-    } else if (estudio.descricao == undefined) {
-        MESSAGE.ERROR_REQUIRED_FIEDS.invalid_field = 'ATRIUBUTO -> [DESCRIÇÃO] <- INVÁLIDO'
-
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'ATRIUBUTO -> [SEDE] <- INVÁLIDO'
+        return MESSAGE.ERROR_REQUIRED_FIELDS
+    } else if (!estudio.data_fundacao === undefined || estudio.data_fundacao == '' || estudio.data_fundacao.length != 10) {
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'ATRIUBUTO -> [DATA_FUNDACAO] <- INVÁLIDO'
+        return MESSAGE.ERROR_REQUIRED_FIELDS
+    } else if (estudio.fundador == '' || estudio.fundador == null || estudio.fundador == undefined || estudio.fundador.length > 100) {
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'ATRIUBUTO -> [FUNDADOR] <- INVÁLIDO'
+        return MESSAGE.ERROR_REQUIRED_FIELDS
+    } else if (estudio.descricao === undefined) {
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'ATRIUBUTO -> [DESCRIÇÃO] <- INVÁLIDO'
+        return MESSAGE.ERROR_REQUIRED_FIELDS
     } else {
         return false
     }

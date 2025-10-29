@@ -76,14 +76,13 @@ const setInsertStudio = async function(estudio) {
 
     try {
         let sql = `insert into tbl_estudio (nome, sede, data_fundacao, fundador, descricao)
-                    values("${estudio.nome}", 
-                            "${estudio.sede}",
-                            "${estudio.data_funcadacao}",
-                            "${estudio.fundador}",
-                            "${estudio.descricao}");`
-
+                    values('${estudio.nome}', 
+                            '${estudio.sede}',
+                            '${estudio.data_funcadacao}',
+                            '${estudio.fundador}',
+                            '${estudio.descricao}');`
+        console.log(sql)
         let result = await prisma.$executeRawUnsafe(sql)
-
         if (result)
             return true
         else
