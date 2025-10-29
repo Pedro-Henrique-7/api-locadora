@@ -167,6 +167,7 @@ async function atualizarGenero(genero, id, contentType) {
         }    
 }
 
+// ok
 async function deletarGenero(id) {
         let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
