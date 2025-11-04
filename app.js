@@ -16,7 +16,7 @@ const controllerFilme = require('./controller/filme/controller_filme.js')
 const controllerGenero = require('./controller/genero/controller_genero.js')
 const controllerNacionalidade = require('./controller/nacionalidade/controller_nacionalidade.js')
 const controllerEstudio = require('./controller/estudio/controller_estudio.js')
-
+const controllerDiretor = require('./controller/diretor/controller_diretor.js')
 
 const itsWorking = require('./itsWorking.js')
 
@@ -297,7 +297,7 @@ app.put('/v1/locadora/estudio/:id', cors(), bodyParserJSON, async (request, resp
     response.json(estudioAtualizado)
 })
 
-// Endpoint: Exclui um estúdio filtrando pelo ID
+// Exclui um estúdio filtrando pelo ID
 app.delete('/v1/locadora/estudio/:id', cors(), async (request, response) => {
     let idEstudio = request.params.id
 
@@ -308,6 +308,60 @@ app.delete('/v1/locadora/estudio/:id', cors(), async (request, response) => {
 })
 
 
+
+
+//crud para diretor
+
+
+//listar todos diretores
+app.get('/v1/locadora/diretores', cors(),  async (request, response) => {
+    let dados = await controllerDiretor.listarDiretores()
+
+    response.status(dados.status_code)
+    response.json(dados)
+})
+
+//buscar diretor por id
+app.get('/v1/locadora/diretor/:id', cors(), async (request, response) => {
+    let id = request.params.id
+    let dados = await controllerDiretor.buscarDiretorId(id)
+
+    response.status(dados.status_code)
+    response.json(dados)
+})
+
+//inserir diretor
+app.post('/v1/locadora/diretor',cors(), bodyParserJSON, async (request, response) => {
+    let contentType = request.headers['content-type']
+    let dadosBody = request.body
+
+    let dados = await controllerDiretor.inserirDiretor(dadosBody, contentType)
+
+    response.status(dados.status_code)
+    response.json(dados)
+})
+
+//atualizar dados
+app.put('/v1/locadora/diretor/:id',cors(), bodyParserJSON, async (request, response) => {
+    let contentType = request.headers['content-type']
+    let id = request.params.id
+    let dadosBody = request.body
+
+    let dados = await controllerDiretor.atualizarDiretor(dadosBody, id, contentType)
+
+    response.status(dados.status_code)
+    response.json(dados)
+})
+
+
+//excluir diretor
+app.delete('/v1/locadora/diretor/:id', cors(), async (request, response) => {
+    let id = request.params.id
+    let dados = await controllerDiretor.excluirDiretor(id)
+
+    response.status(dados.status_code)
+    response.json(dados)
+})
 
 
 
