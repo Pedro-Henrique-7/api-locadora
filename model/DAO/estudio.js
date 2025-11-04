@@ -78,18 +78,22 @@ const setInsertStudio = async function(estudio) {
         let sql = `insert into tbl_estudio (nome, sede, data_fundacao, fundador, descricao)
                     values("${estudio.nome}", 
                             "${estudio.sede}",
-                            "${estudio.data_funcadacao}",
+                            "${estudio.data_fundacao}",
                             "${estudio.fundador}",
                             "${estudio.descricao}");`
 
+        
         let result = await prisma.$executeRawUnsafe(sql)
+        
 
         if (result)
             return true
         else
+
             return false
 
     } catch (error) {
+
         return false
     }
 
@@ -100,12 +104,13 @@ const setUpdateStudio = async function(estudio) {
 
     try {
         let sql = `update tbl_estudio set
-                                    "${estudio.nome}", 
-                                    "${estudio.sede}",
-                                    "${estudio.data_funcadacao}",
-                                    "${estudio.fundador}",
-                                    "${estudio.descricao}"
-                    where estudio_id = ${estudio.estudio_id};`
+                nome = '${estudio.nome}',
+                sede = '${estudio.sede}',
+                data_fundacao = '${estudio.data_fundacao}',
+                fundador = '${estudio.fundador}',
+                descricao = '${estudio.descricao}'
+                WHERE estudio_id = ${estudio.id};`
+
 
         let result = await prisma.$executeRawUnsafe(sql)
 

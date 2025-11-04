@@ -15,6 +15,8 @@ const bodyParser = require('body-parser')
 const controllerFilme = require('./controller/filme/controller_filme.js')
 const controllerGenero = require('./controller/genero/controller_genero.js')
 const controllerNacionalidade = require('./controller/nacionalidade/controller_nacionalidade.js')
+const controllerEstudio = require('./controller/estudio/controller_estudio.js')
+
 
 const itsWorking = require('./itsWorking.js')
 
@@ -251,6 +253,59 @@ app.delete('/v1/locadora/nacionalidade/:id', cors(), async(request, response) =>
     response.json(nacionalidade)
 })
 
+// endpoints para estudio
+
+
+//Retorna todos os estúdios
+app.get('/v1/locadora/estudio', cors(), async (request, response) => {
+    let estudios = await controllerEstudio.listarEstudios()
+
+    response.status(estudios.status_code)
+    response.json(estudios)
+})
+
+// Retorna um estúdio filtrando pelo ID
+app.get('/v1/locadora/estudio/:id', cors(), async (request, response) => {
+    let idEstudio = request.params.id
+
+    let estudio = await controllerEstudio.buscarEstudioId(idEstudio)
+
+    response.status(estudio.status_code)
+    response.json(estudio)
+})
+
+//Insere um novo estúdio
+app.post('/v1/locadora/estudio', cors(), bodyParserJSON, async (request, response) => {
+    let dadosBody = request.body
+    let contentType = request.headers['content-type']
+
+    let novoEstudio = await controllerEstudio.inserirEstudio(dadosBody, contentType)
+
+    response.status(novoEstudio.status_code)
+    response.json(novoEstudio)
+})
+
+// Atualiza um estúdio filtrando pelo ID
+app.put('/v1/locadora/estudio/:id', cors(), bodyParserJSON, async (request, response) => {
+    let idEstudio = request.params.id
+    let dadosBody = request.body
+    let contentType = request.headers['content-type']
+
+    let estudioAtualizado = await controllerEstudio.ataualizarEstudio(dadosBody, idEstudio, contentType)
+
+    response.status(estudioAtualizado.status_code)
+    response.json(estudioAtualizado)
+})
+
+// Endpoint: Exclui um estúdio filtrando pelo ID
+app.delete('/v1/locadora/estudio/:id', cors(), async (request, response) => {
+    let idEstudio = request.params.id
+
+    let estudio = await controllerEstudio.excluirEstudio(idEstudio)
+
+    response.status(estudio.status_code)
+    response.json(estudio)
+})
 
 
 
