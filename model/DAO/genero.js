@@ -78,15 +78,15 @@ const setInsertGenders = async function (genero) {
         let sql = `insert into tbl_genero(nome, descricao)
                     values("${genero.nome}", 
                             "${genero.descricao}");`
-
         let result = await prisma.$executeRawUnsafe(sql)
-         
+
         if(result)
             return true
         else
             return false
 
     } catch (error) {
+        console.log(error)
         return false
     }
     
