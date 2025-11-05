@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const controllerGenero = require('./controller/genero/controller_genero.js')
+const controllerGenero = require('../controller/genero/controller_genero.js')
 
 
 //ENDPOINTS PARA CRUD DE GENERO
 
-router.get('/v1/locadora/genero', cors(), async(request, response) => {
+router.get('/v1/locadora/genero', async(request, response) => {
     let genero = await controllerGenero.listarGeneros()
 
     response.status(genero.status_code)
@@ -14,7 +14,7 @@ router.get('/v1/locadora/genero', cors(), async(request, response) => {
 
 
 
-router.get('/v1/locadora/genero/:id', cors(), async(request, response) => {
+router.get('/v1/locadora/genero/:id', async(request, response) => {
     let idGenero = request.params.id
 
     let genero = await controllerGenero.buscarGeneroId(idGenero)
@@ -23,7 +23,7 @@ router.get('/v1/locadora/genero/:id', cors(), async(request, response) => {
     response.json(genero)
 })
 
-router.post('/v1/locadora/genero', cors(), bodyParserJSON, async(request, response) => {
+router.post('/v1/locadora/genero', async(request, response) => {
 
     // Recebe o JSON pelo body da requisição
     let dadosBody = request.body
@@ -38,7 +38,7 @@ router.post('/v1/locadora/genero', cors(), bodyParserJSON, async(request, respon
 })
 
 
-router.put('/v1/locadora/genero/:id', cors(), bodyParserJSON, async(request, response) => {
+router.put('/v1/locadora/genero/:id', async(request, response) => {
 
     // Recebe o JSON pelo body da requisição
     let dadosBody = request.body
@@ -56,7 +56,7 @@ router.put('/v1/locadora/genero/:id', cors(), bodyParserJSON, async(request, res
 
 
 
-router.delete('/v1/locadora/genero/:id', cors(), async(request, response) => {
+router.delete('/v1/locadora/genero/:id',async(request, response) => {
     let idGenero = request.params.id
 
     let genero = await controllerGenero.deletarGenero(idGenero)

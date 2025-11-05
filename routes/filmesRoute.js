@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const controllerFilme = require('./controller/filme/controller_filme.js')
+const controllerFilme = require('../controller/filme/controller_filme.js')
 
 // ENDPOINT PARA CRUD DE FILMES-------------------------------------------
-router.get('/v1/locadora/filmes', cors(), async(request, response) => {
+router.get('/v1/locadora/filmes', async(request, response) => {
     //chama a função da controller par aretornar os movies
 
     let filme = await controllerFilme.listarFilmes()
@@ -15,7 +15,7 @@ router.get('/v1/locadora/filmes', cors(), async(request, response) => {
 
 
 //retorna um filme por i 
-router.get('/v1/locadora/filme/:id', cors(), async(request, response) => {
+router.get('/v1/locadora/filme/:id', async(request, response) => {
     //chama a função da controller para retornar o movie
 
     //recebe o id enviado na requisição via parametro
@@ -31,7 +31,7 @@ router.get('/v1/locadora/filme/:id', cors(), async(request, response) => {
 
 
 //insere um novo firme no banco dedados
-router.post('/v1/locadora/filme', cors(), bodyParserJSON, async(request, response) => {
+router.post('/v1/locadora/filme', async(request, response) => {
 
     // Recebe o JSON pelo body da requisição
     let dadosBody = request.body
@@ -47,7 +47,7 @@ router.post('/v1/locadora/filme', cors(), bodyParserJSON, async(request, respons
 })
 
 
-router.put('/v1/locadora/filme/:id', cors(), bodyParserJSON, async(request, response) => {
+router.put('/v1/locadora/filme/:id', async(request, response) => {
 
     //recebe os dados do body
     let dadosBody = request.body
@@ -65,7 +65,7 @@ router.put('/v1/locadora/filme/:id', cors(), bodyParserJSON, async(request, resp
 })
 
 
-router.delete('/v1/locadora/filme/:id', cors(), async(request, response) => {
+router.delete('/v1/locadora/filme/:id', async(request, response) => {
         let idFilme = request.params.id
 
         let filme = await controllerFilme.excluirFilme(idFilme)

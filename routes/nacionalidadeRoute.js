@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const controllerNacionalidade = require('./controller/genero/controller_genero.js')
+const controllerNacionalidade = require('../controller/genero/controller_genero.js')
 
 // ENDPOINTS PARA NACIONALIDADES
 
-router.get('/v1/locadora/nacionalidade', cors(), async(request, response) => {
+router.get('/v1/locadora/nacionalidade', async(request, response) => {
     let nacionalidade = await controllerNacionalidade.listarNacionalidades()
 
     response.status(nacionalidade.status_code)
@@ -13,7 +13,7 @@ router.get('/v1/locadora/nacionalidade', cors(), async(request, response) => {
 
 
 
-router.get('/v1/locadora/nacionalidade/:id', cors(), async(request, response) => {
+router.get('/v1/locadora/nacionalidade/:id', async(request, response) => {
     let idNacionalidade = request.params.id
 
     let nacionalidade = await controllerNacionalidade.buscarNacionalidadeId(idNacionalidade)
@@ -22,7 +22,7 @@ router.get('/v1/locadora/nacionalidade/:id', cors(), async(request, response) =>
     response.json(nacionalidade)
 })
 
-router.post('/v1/locadora/nacionalidade', cors(), bodyParserJSON, async(request, response) => {
+router.post('/v1/locadora/nacionalidade', async(request, response) => {
 
     // Recebe o JSON pelo body da requisição
     let dadosBody = request.body
@@ -37,7 +37,7 @@ router.post('/v1/locadora/nacionalidade', cors(), bodyParserJSON, async(request,
 })
 
 
-router.put('/v1/locadora/nacionalidade/:id', cors(), bodyParserJSON, async(request, response) => {
+router.put('/v1/locadora/nacionalidade/:id', async(request, response) => {
 
     // Recebe o JSON pelo body da requisição
     let dadosBody = request.body
@@ -55,7 +55,7 @@ router.put('/v1/locadora/nacionalidade/:id', cors(), bodyParserJSON, async(reque
 
 
 
-router.delete('/v1/locadora/nacionalidade/:id', cors(), async(request, response) => {
+router.delete('/v1/locadora/nacionalidade/:id', async(request, response) => {
     let idNacionalidade = request.params.id
 
     let nacionalidade = await controllerNacionalidade.excluirNacionalidade(idNacionalidade)
