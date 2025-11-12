@@ -74,21 +74,21 @@ const getSelectLastID = async function() {
 const getSelectGenresFilmById = async function(idFilme) {
 
     try {
-        let sql = `select tbl_filme.id, tbl_filme.nome 
-                    from tbl_filme 
-                        inner join tbl_filme_genero
-                            on tbl_filme.id = tbl_filme_genero.filme_id
-                        inner join tbl_genero
-                            on tbl_genero.genero_id = tbl_filme_genero_id
-                    where tbl_genero.genero_id = ${idFilme}`;
+        let sql = `select tbl_genero.genero_id, tbl_genero.nome
+                     from tbl_filme
+                            join tbl_filme_genero
+                                on tbl_filme.id = tbl_filme_genero.filme_id
+                            join tbl_genero
+                                on tbl_genero.genero_id = tbl_filme_genero.genero_id 
+                     where tbl_filme.id = ${idFilme}`;
         let result = await prisma.$queryRawUnsafe(sql)
-
         if (Array.isArray(result))
-            return Number(result[0].filme_id)
+            return result
         else
             return false
 
     } catch (error) {
+
         return false
     }
 
@@ -98,17 +98,17 @@ const getSelectGenresFilmById = async function(idFilme) {
 const getSelectFilmGenresById = async function($idGenero) {
 
     try {
-        let sql = `select tbl_genero.id, tbl_genero.nome 
-                    from tbl_genero 
+        let sql = `select tbl_filme.id, tbl_filme.nome 
+                    from tbl_filme 
                         inner join tbl_filme_genero
-                            on tbl_genero.genero_id = tbl_filme_genero.filme_id
+                            on tbl_filme.id = tbl_filme_genero.filme_id
                         inner join tbl_genero
-                            on tbl_genero.genero_id = tbl_filme_genero_id
+                            on tbl_genero.genero_id = tbl_filme_genero.genero_id
                     where tbl_genero.genero_id = ${$idGenero}`;
         let result = await prisma.$queryRawUnsafe(sql)
 
         if (Array.isArray(result))
-            return Number(result[0].genero_id)
+            return result
         else
             return false
 

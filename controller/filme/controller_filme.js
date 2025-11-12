@@ -101,24 +101,40 @@ async function inserirFilme(filme, contentType) {
                         // processamento para inserir dados na tabela de relação filmes e generos
 
                         // repetiçao para pegar cad genero e enviar para o DAO do filme genero
-                        filme.genero.forEach(async function(genero) {
+                        for (genero of filme.genero) {
                             let filmeGenero = {
                                 filme_id: lastIdFilme,
                                 genero_id: genero.id
                             }
 
                             let resultFilmeGenero = await controllerFilmeGenero.inserirFilmeGenero(filmeGenero, contentType)
-                            console.log(resultFilmeGenero);
+                            if (resultFilmeGenero.status_code != 201) {
+                                return MESSAGE.ERROR.RELATION //200 MAS COM ERRO NA RELAÇÃO
+                            }
 
-                        })
+                        }
 
 
                         // adiciona no json de filme o id que foi gerado pelo banco de dados
-                        filme.id = lastIdFilme
+                        // filme.id = lastIdFilme
                         MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status
                         MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
                         MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message
-                        MESSAGE.HEADER.response = filme
+
+                        //Processamento para trazer dados dos generos cadastrados na tabela de relação
+                        delete filme.genero
+
+
+                        let resultGeneroFilme = await controllerFilmeGenero.listarGenerosIdFilme(lastIdFilme)
+                        filme.genero = resultGeneroFilme.response.filmesGenero;
+
+
+                        let filmeInserido = {
+                            "id": lastIdFilme,
+                            ...filme
+                        }
+
+                        MESSAGE.HEADER.response = filmeInserido
 
 
                         return MESSAGE.HEADER //201   
@@ -137,7 +153,6 @@ async function inserirFilme(filme, contentType) {
             return MESSAGE.ERROR_CONTENT_TYPE
         }
     } catch (error) {
-        console.log(error)
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
@@ -168,12 +183,24 @@ async function ataualizarFilme(filme, id, contentType) {
                     // chama função do DAO para atualizar filme
                     let result = await filmeDAO.setUpdateMovie(filme, id, contentType)
                     if (result) {
-                        MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
-                        MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
-                        MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message
-                        MESSAGE.HEADER.response = filme
 
-                        return MESSAGE.HEADER //201
+                        for (genero of filme.genero) {
+                            let filmeGenero = {
+                                filme_id: filme.id,
+                                genero_id: genero.id
+                            }
+
+                            let resultFilmeGenero = await controllerFilmeGenero.inserirFilmeGenero(filmeGenero, contentType)
+                            if (resultFilmeGenero.status_code != 201) {
+                                return MESSAGE.ERROR.RELATION //200 MAS COM ERRO NA RELAÇÃO
+                            }
+
+                            MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
+                            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
+                            MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message
+                            MESSAGE.HEADER.response = filme
+                            return MESSAGE.HEADER //201
+                        }
                     } else {
                         MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
                     }

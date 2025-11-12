@@ -7,16 +7,16 @@
 const { response } = require("express");
 
 const dataAtual = new Date()
-//header do projeto
+    //header do projeto
 const HEADER = {
-                            developer : 'Pedro Henrique Oliveira da Silva',
-                            api_description: 'API to manipulate data from a Movie Rental Store',
-                            version: '1.0.10.25',
-                            request_date:  dataAtual.toLocaleString(),
-                            status:  Boolean,
-                            status_code: Number,
-                            response:{}
-                        }
+    developer: 'Pedro Henrique Oliveira da Silva',
+    api_description: 'API to manipulate data from a Movie Rental Store',
+    version: '1.0.10.25',
+    request_date: dataAtual.toLocaleString(),
+    status: Boolean,
+    status_code: Number,
+    response: {}
+}
 
 
 
@@ -24,20 +24,28 @@ const HEADER = {
 //mensagem de sucesso do projeto
 
 const SUCCESS_REQUEST = {
-    status: true, status_code: 200, message: 'Success'
-                                }
+    status: true,
+    status_code: 200,
+    message: 'Success'
+}
 
 
 const SUCCESS_CREATED_ITEM = {
-    status: true, status_code: 201, message: 'Created'
+    status: true,
+    status_code: 201,
+    message: 'Created'
 }
 
 const SUCCESS_UPDATED_ITEM = {
-    status: true, status_code: 200, message: 'Good Request, object has been sucessfully updated'
+    status: true,
+    status_code: 200,
+    message: 'Good Request, object has been sucessfully updated'
 }
 
 const SUCCESS_DELETED_ITEM = {
-    status: true, status_code: 200, message: 'Good Request, object has been sucessfully deleted'
+    status: true,
+    status_code: 200,
+    message: 'Good Request, object has been sucessfully deleted'
 }
 
 
@@ -47,15 +55,15 @@ const SUCCESS_DELETED_ITEM = {
 ////////ERROS
 
 const ERROR_NOT_FOUND = {
-                            status: false,
-                            status_code: 404, 
-                            message: 'The server cannot find the requested resource.'
+    status: false,
+    status_code: 404,
+    message: 'The server cannot find the requested resource.'
 }
 
 const ERROR_INTERNAL_SERVER_MODEl = {
-                            status: false,
-                            status_code: 500, 
-                            message: 'The server has encountered a situation it does not know how to handle. Problems in data modeling'
+    status: false,
+    status_code: 500,
+    message: 'The server has encountered a situation it does not know how to handle. Problems in data modeling'
 }
 
 const ERROR_INTERNAL_SERVER_CONTROLLER = {
@@ -72,14 +80,20 @@ const ERROR_CONTENT_TYPE = {
 
 
 const ERROR_REQUIRED_FIELDS = {
-                    status: false,
-                    status_code: 400,
-                    message: 'The server cannot or will not process the request because some required field are not bad).'
+    status: false,
+    status_code: 400,
+    message: 'The server cannot or will not process the request because some required field are not bad).'
 }
 
 
+const ERROR_RELATION = {
+    status: false,
+    status_code: 200,
+    message: 'Good Request but but problems in relation table.'
+}
+
 //////
-module.exports={
+module.exports = {
     HEADER,
     ERROR_NOT_FOUND,
     ERROR_INTERNAL_SERVER_CONTROLLER,
@@ -89,5 +103,6 @@ module.exports={
     SUCCESS_CREATED_ITEM,
     SUCCESS_UPDATED_ITEM,
     SUCCESS_DELETED_ITEM,
-    ERROR_CONTENT_TYPE
+    ERROR_CONTENT_TYPE,
+    ERROR_RELATION
 }

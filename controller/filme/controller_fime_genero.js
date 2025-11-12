@@ -20,7 +20,7 @@ async function listarFilmesGenero() {
 
         let result = await filmeGeneroDAO.getSelectAllFilmsGenre()
 
-        if (resultt) {
+        if (result) {
             if (result.length > 0) {
 
                 //resposta caso o banco tenha mais que 0 filmes
@@ -79,18 +79,18 @@ async function buscarFilmeGeneroId(id) {
 }
 
 
-//retorna os generos filtrando pelo id do filme
 
-async function listarFilmesIdGenero(filme_id) {
+
+async function listarFilmesIdGenero(genero_id) {
 
     //copia da message para não afetar na global
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
         //validação do id
-        if (filme_id != '' && filme_id != null && filme_id != undefined && filme_id > 0) {
+        if (genero_id != '' && genero_id != null && genero_id != undefined && genero_id > 0) {
 
-            let result = await filmeGeneroDAO.getSelectFilmGenresById(parseInt(filme_id))
+            let result = await filmeGeneroDAO.getSelectFilmGenresById(parseInt(genero_id))
 
             if (result) {
                 if (result.length > 0) {
@@ -115,22 +115,24 @@ async function listarFilmesIdGenero(filme_id) {
 
 }
 
-async function listarGenerosIdFilme(genero_id) {
+//retorna os generos filtrando pelo id do filme
+async function listarGenerosIdFilme(filme_id) {
 
     //copia da message para não afetar na global
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
         //validação do id
-        if (genero_id != '' && genero_id != null && genero_id != undefined && genero_id > 0) {
+        if (filme_id != '' && filme_id != null && filme_id != undefined && filme_id > 0) {
 
-            let result = await filmeGeneroDAO.getSelectGenresFilmById(parseInt(genero_id))
-
+            let result = await filmeGeneroDAO.getSelectGenresFilmById(parseInt(filme_id))
+            console.log(result)
             if (result) {
                 if (result.length > 0) {
                     MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
                     MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
                     MESSAGE.HEADER.response.filmesGenero = result
+                    console.log(MESSAGE.HEADER)
 
                     return MESSAGE.HEADER //200
                 } else {
@@ -144,6 +146,7 @@ async function listarGenerosIdFilme(genero_id) {
             return MESSAGE.ERROR_REQUIRED_FIELDS
         }
     } catch (error) {
+        console.log(error)
         return MESSAGE.ERRO_INTERNAL_SERVER_CONTROLER
     }
 
@@ -207,11 +210,10 @@ async function atualizarFilmeGenero(filmeGenero, id, contentType) {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
             filmeGenero.id = parseInt(id)
-            let validarDados = await validarDadosGenero(genero)
+            let validarDados = await validarDadosFilmesGenero(genero)
 
             if (!validarDados) {
                 let validarId = await buscarGeneroId(id)
-                console.log(validarId)
                 if (validarId.status_code == 200) {
                     let result = await filmeGenero.setUpdateFilmsGenre(genero, id, contentType)
                     if (result) {
@@ -287,9 +289,11 @@ async function validarDadosFilmesGenero(filmeGenero) {
 
 
 module.exports = {
-    // listarGeneros,
-    // buscarGeneroId,
-    inserirFilmeGenero
-    // atualizarGenero,
-    // deletarGenero
+    listarFilmesGenero,
+    buscarFilmeGeneroId,
+    inserirFilmeGenero,
+    atualizarFilmeGenero,
+    deletarFilmeGenero,
+    listarGenerosIdFilme,
+    listarFilmesIdGenero
 }
