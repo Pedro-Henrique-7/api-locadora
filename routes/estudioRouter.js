@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const controllerEstudio = require('../controller/genero/controller_genero.js')
+const controllerEstudio = require('../controller/estudio/controller_estudio.js')
 
 
 // endpoints para estudio

@@ -41,7 +41,7 @@ const nacionalidadeRota = require('./routes/nacionalidadeRoute.js')
 const diretorRota = require('./routes/diretorRoute.js')
 const generoRota = require('./routes/generoRoute.js')
 const defaultRota = require('./routes/defaultRoute.js')
-
+const atorRota = require('./routes/atorRoute.js')
 
 
 // Usa as rotas
@@ -51,9 +51,9 @@ app.use(estudioRota)
 app.use(diretorRota)
 app.use(nacionalidadeRota)
 app.use(defaultRota)
-
+app.use(atorRota)
 
 
 app.listen(PORT, function() {
-    console.log(`${itsWorkingMessage}`)
+    console.log(`ok`)
 })

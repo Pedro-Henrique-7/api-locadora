@@ -1,6 +1,6 @@
 /********************************************************************
  * Objetivo : arquivo responsável pela realização do CRUD de diretor no banco MySQL
- * data: 04/11/2025
+ * data: 12/11/2025
  * autor: Pedro
  * Versão: 1.0
  ********************************************************************/
@@ -18,7 +18,7 @@ const getSelectAllActor = async function() {
         let result = await prisma.$queryRawUnsafe(sql)
 
         if (Array.isArray(result))
-            console.log(result)
+            return result
         else
             return false
 

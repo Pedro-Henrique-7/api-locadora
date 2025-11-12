@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const controllerNacionalidade = require('../controller/genero/controller_genero.js')
+const controllerNacionalidade = require('../controller/nacionalidade/controller_nacionalidade.js')
 
 // ENDPOINTS PARA NACIONALIDADES
 
