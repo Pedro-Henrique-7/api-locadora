@@ -149,7 +149,7 @@ const setUpdateFilmsGenre = async function(filmeGenero) {
     try {
         let sql = `update tbl_filme_genero set
                         filme_id       = ${filmeGenero.filme_id},
-                        genero_id   = ${filmeGenero.genero_id},
+                        genero_id   = ${filmeGenero.genero_id}
                         where id = ${filmeGenero.id};`
 
         let result = await prisma.$executeRawUnsafe(sql)
@@ -159,7 +159,7 @@ const setUpdateFilmsGenre = async function(filmeGenero) {
         else
             return false
     } catch (error) {
-        return false
+        console.log(error)
     }
 
 }

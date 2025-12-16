@@ -42,9 +42,8 @@ async function listarFilmesGenero() {
     }
 
 }
-
 //ok
-async function buscarFilmeGeneroId(id) {
+async function buscarFilmeGeneroById(id) {
 
     //copia da message para não afetar na global
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
@@ -53,7 +52,7 @@ async function buscarFilmeGeneroId(id) {
         //validação do id
         if (id != '' && id != null && id != undefined && id > 0) {
 
-            let result = await filmeGeneroDAO.getSelectFilmGenresById(parseInt(id))
+            let result = await filmeGeneroDAO.getSelectByIDFilmGenre(parseInt(id))
 
             if (result) {
                 if (result.length > 0) {
@@ -77,10 +76,6 @@ async function buscarFilmeGeneroId(id) {
     }
 
 }
-
-
-
-
 async function listarFilmesIdGenero(genero_id) {
 
     //copia da message para não afetar na global
@@ -114,7 +109,6 @@ async function listarFilmesIdGenero(genero_id) {
     }
 
 }
-
 //retorna os generos filtrando pelo id do filme
 async function listarGenerosIdFilme(filme_id) {
 
@@ -151,7 +145,6 @@ async function listarGenerosIdFilme(filme_id) {
     }
 
 }
-
 
 //ok
 async function inserirFilmeGenero(filmeGenero, contentType) {
@@ -198,7 +191,6 @@ async function inserirFilmeGenero(filmeGenero, contentType) {
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
-
 // ok
 async function atualizarFilmeGenero(filmeGenero, id, contentType) {
 
@@ -210,12 +202,12 @@ async function atualizarFilmeGenero(filmeGenero, id, contentType) {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
             filmeGenero.id = parseInt(id)
-            let validarDados = await validarDadosFilmesGenero(genero)
+            let validarDados = await validarDadosFilmesGenero(filmeGenero)
 
             if (!validarDados) {
-                let validarId = await buscarGeneroId(id)
+                let validarId = await buscarFilmeGeneroById(id)
                 if (validarId.status_code == 200) {
-                    let result = await filmeGenero.setUpdateFilmsGenre(genero, id, contentType)
+                    let result = await filmeGeneroDAO.setUpdateFilmsGenre(filmeGenero, id, contentType)
                     if (result) {
                         MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
                         MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
@@ -236,16 +228,16 @@ async function atualizarFilmeGenero(filmeGenero, id, contentType) {
             return MESSAGE.ERROR_CONTENT_TYPE
         }
     } catch (error) {
+        console.log(error)
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
-
 // ok
 async function deletarFilmeGenero(id) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
-        let validarId = await buscarGeneroId(id)
+        let validarId = await buscarFilmeGeneroById(id)
 
         console.log(validarId)
 
@@ -269,7 +261,6 @@ async function deletarFilmeGenero(id) {
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
-
 //ok
 async function validarDadosFilmesGenero(filmeGenero) {
     //copia da message para não afetar na global
@@ -287,10 +278,9 @@ async function validarDadosFilmesGenero(filmeGenero) {
 
 }
 
-
 module.exports = {
     listarFilmesGenero,
-    buscarFilmeGeneroId,
+    buscarFilmeGeneroById,
     inserirFilmeGenero,
     atualizarFilmeGenero,
     deletarFilmeGenero,
